@@ -45,49 +45,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: Music
-    clip: {fileID: 8300000, guid: 8d51fa8d07475614fa02d80bab039dd6, type: 3}
+    clip: {fileID: 8300000, guid: 6ae99376944be574f984aebe757379e1, type: 3}
     volume: 0.4
     pitch: 1
     loop: 1
     source: {fileID: 0}
   - name: ButtonClick
-    clip: {fileID: 8300000, guid: 5f2805536b7f4264497c35b8fdbdc5c3, type: 3}
+    clip: {fileID: 8300000, guid: 8fdaed16af42b10439edebbc84849809, type: 3}
     volume: 0.1
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Point
-    clip: {fileID: 8300000, guid: 00aaf1fbf3961ca45ae2da3992e633a1, type: 3}
+    clip: {fileID: 8300000, guid: 61a7a1fedfa7d14478bffa930329d72f, type: 3}
     volume: 0.2
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: ComboAdd
-    clip: {fileID: 8300000, guid: f6258febf0b52074c985c2f46334a018, type: 3}
+    clip: {fileID: 8300000, guid: 19ed429991a444246a80e7311263b763, type: 3}
     volume: 0.1
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: ComboRemove
-    clip: {fileID: 8300000, guid: f647b2e8639e20347b029e4457e1f90c, type: 3}
+    clip: {fileID: 8300000, guid: f5740a0c0e4beac4f93510e5589c6d8c, type: 3}
     volume: 0.1
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Death
-    clip: {fileID: 8300000, guid: 7a8d1ce359dee8d40a39ec4c7606029d, type: 3}
+    clip: {fileID: 8300000, guid: 4c55d65ee6e4cd142baabf22341868ac, type: 3}
     volume: 0.2
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Shield
-    clip: {fileID: 8300000, guid: 04ee3d95646970744ad0a0e64ec1d6cc, type: 3}
+    clip: {fileID: 8300000, guid: b082ac39d9be2af4ab9c96c903d6a4ef, type: 3}
     volume: 0.25
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Spike
-    clip: {fileID: 8300000, guid: e35ec231797f8694c9327fa956d7a992, type: 3}
+    clip: {fileID: 8300000, guid: 0ef03d99e1d93b544a03962314f531a1, type: 3}
     volume: 0.25
     pitch: 1
     loop: 0
