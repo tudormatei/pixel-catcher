@@ -1,95 +1,98 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using Scripts.Audio;
 
-public class SettingsMenu : MonoBehaviour
+namespace Scripts.UI
 {
-    [SerializeField] private Button graphics;
-    [SerializeField] private Button performance;
-    [SerializeField] private Toggle music;
-    [SerializeField] private Toggle volume;
-
-    [SerializeField] private GameObject postProcessing;
-
-    public AudioMixer master;
-
-    private void Start()
+    public class SettingsMenu : MonoBehaviour
     {
-        int musicVolume = PlayerPrefs.GetInt("musicVolume", 1);
+        [SerializeField] private Button graphics;
+        [SerializeField] private Button performance;
+        [SerializeField] private Toggle music;
+        [SerializeField] private Toggle volume;
 
-        if(musicVolume == 1)
+        [SerializeField] private GameObject postProcessing;
+
+        public AudioMixer master;
+
+        private void Start()
         {
-            music.isOn = false;
-        }
-        else
-        {
-            music.isOn = true;
+            int musicVolume = PlayerPrefs.GetInt("musicVolume", 1);
+
+            if (musicVolume == 1)
+            {
+                music.isOn = false;
+            }
+            else
+            {
+                music.isOn = true;
+            }
+
+            int masterVolume = PlayerPrefs.GetInt("masterVolume", 1);
+
+            if (masterVolume == 1)
+            {
+                volume.isOn = false;
+            }
+            else
+            {
+                volume.isOn = true;
+            }
         }
 
-        int masterVolume = PlayerPrefs.GetInt("masterVolume", 1);
+        private void Update()
+        {
+            if (postProcessing.activeSelf)
+            {
+                graphics.Select();
+            }
+            else
+            {
+                performance.Select();
+            }
+        }
 
-        if (masterVolume == 1)
+        public void Graphics()
         {
-            volume.isOn = false;
+            postProcessing.SetActive(true);
+            PlayerPrefs.SetInt("Graphics", 0);
         }
-        else
-        {
-            volume.isOn = true;
-        }
-    }
 
-    private void Update()
-    {
-        if (postProcessing.activeSelf)
+        public void Performance()
         {
-            graphics.Select();
+            postProcessing.SetActive(false);
+            PlayerPrefs.SetInt("Graphics", 1);
         }
-        else
-        {
-            performance.Select();
-        }
-    }
 
-    public void Graphics()
-    {
-        postProcessing.SetActive(true);
-        PlayerPrefs.SetInt("Graphics", 0);
-    }
+        public void Volume()
+        {
+            if (!volume.isOn)
+            {
+                PlayerPrefs.SetInt("masterVolume", 1);
+                master.SetFloat("master", 10);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("masterVolume", 0);
+                master.SetFloat("master", -100);
+            }
+        }
 
-    public void Performance()
-    {
-        postProcessing.SetActive(false);
-        PlayerPrefs.SetInt("Graphics", 1);
-    }
+        public void Music()
+        {
+            if (!music.isOn)
+            {
+                PlayerPrefs.SetInt("musicVolume", 1);
+                FindObjectOfType<AudioManager>().GetSource("Music").volume = .4f;
+            }
+            else
+            {
+                PlayerPrefs.SetInt("musicVolume", 0);
+                FindObjectOfType<AudioManager>().GetSource("Music").volume = 0f;
+            }
+        }
 
-    public void Volume()
-    {
-        if (!volume.isOn)
-        {
-            PlayerPrefs.SetInt("masterVolume", 1);
-            master.SetFloat("master", 10);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("masterVolume", 0);
-            master.SetFloat("master", -100);
-        }
-    }
-
-    public void Music()
-    {
-        if (!music.isOn)
-        {
-            PlayerPrefs.SetInt("musicVolume", 1);
-            FindObjectOfType<AudioManager>().GetSource("Music").volume = .4f;
-        }
-        else
-        {
-            PlayerPrefs.SetInt("musicVolume", 0);
-            FindObjectOfType<AudioManager>().GetSource("Music").volume = 0f;
-        }
     }
 
 }

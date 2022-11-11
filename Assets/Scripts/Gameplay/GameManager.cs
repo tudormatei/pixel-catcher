@@ -1,20 +1,20 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using EZCameraShake;
-using UnityEngine.SceneManagement;
-using Scripts.Gameplay;
 using Scripts.Audio;
 
-namespace Scripts.Tutorial
+namespace Scripts.Gameplay
 {
-    public class TutorialGameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour
     {
         [SerializeField] private PostProcessingManager postProcessing;
 
         [SerializeField] private GameObject scoreObject;
         [SerializeField] private GameObject multiplierObject;
+        [SerializeField] private GameObject shieldCooldownObject;
 
         [SerializeField] private Animator scoreAnimator;
 
@@ -23,12 +23,16 @@ namespace Scripts.Tutorial
         [SerializeField] private Image shieldCooldown;
         [SerializeField] private Image shieldCooldownBorder;
 
+        [SerializeField] private GameObject pauseButton;
+
         [SerializeField] private ParticleSystem pointExplosion;
         [SerializeField] private ParticleSystem platformExplosion;
         [SerializeField] private ParticleSystem spikeExposion;
         [SerializeField] private ParticleSystem comboAdderExplosion;
         [SerializeField] private ParticleSystem comboRemoverExplosion;
         [SerializeField] private ParticleSystem shieldExplosion;
+
+        [SerializeField] private List<GameObject> spawners;
 
         [SerializeField] private GameObject pointText;
         [SerializeField] private GameObject poinTextParent;
@@ -41,15 +45,40 @@ namespace Scripts.Tutorial
 
         private Color[] colors = { new Color(255, 255, 255, 255), new Color(255f, 0f, 0f, 255f), new Color(0f, 255f, 0f, 255f), new Color(0f, 0f, 255f, 255f) };
 
+        private bool alive = true;
+        private float playTime = 0f;
+
         private AudioManager audioManager;
+
+        [SerializeField] private GameObject mainMenu;
+        [SerializeField] private TextMeshProUGUI highscore;
 
         private void Start()
         {
-            score = 0;
-            currentMultiplier = 1;
+            if (PlayerPrefs.GetInt("LastScore", 0) != 0)
+            {
+                score = PlayerPrefs.GetInt("LastScore", 0);
+                currentMultiplier = PlayerPrefs.GetInt("LastMultiplier", 1);
+
+                PlayerPrefs.SetInt("XP", PlayerPrefs.GetInt("XP", 0) - score);
+
+                PlayerPrefs.DeleteKey("LastMultiplier");
+                PlayerPrefs.DeleteKey("LastScore");
+            }
+            else
+            {
+                PlayerPrefs.SetInt("RunAD", 0);
+                score = 0;
+                currentMultiplier = 1;
+            }
+
+            pauseButton.GetComponent<Button>().interactable = true;
+            alive = true;
+            playTime = 0f;
 
             Time.timeScale = 1f;
 
+            mainMenu.SetActive(false);
             shield.SetActive(false);
 
             shieldCooldown.fillAmount = 1f;
@@ -61,8 +90,22 @@ namespace Scripts.Tutorial
         private void Update()
         {
             UpdateMultiplierColor();
+
+            Stats();
         }
 
+        private void Stats()
+        {
+            if (currentMultiplier > PlayerPrefs.GetInt("Combo", 0))
+            {
+                PlayerPrefs.SetInt("Combo", currentMultiplier);
+            }
+
+            if (alive)
+            {
+                playTime += Time.deltaTime;
+            }
+        }
 
         private void UpdateMultiplierColor()
         {
@@ -109,10 +152,14 @@ namespace Scripts.Tutorial
                 score += currentMultiplier;
                 scoreAnimator.SetTrigger("increaseScore");
 
+                PlayerPrefs.SetInt("Points", PlayerPrefs.GetInt("Points", 0) + 1);
+
                 Destroy(collision.gameObject);
             }
             else if (tag == "Spike")
             {
+                PlayerPrefs.SetInt("Spikes", PlayerPrefs.GetInt("Spikes", 0) + 1);
+
                 Die();
 
                 if (shield.activeSelf)
@@ -127,6 +174,16 @@ namespace Scripts.Tutorial
                 {
                     audioManager = FindObjectOfType<AudioManager>();
                     audioManager.Play("Death");
+
+                    alive = false;
+
+                    GainXP();
+
+                    PlayerPrefs.SetInt("Deaths", PlayerPrefs.GetInt("Deaths", 0) + 1);
+
+                    PlayerPrefs.SetFloat("PlayTime", PlayerPrefs.GetFloat("PlayTime") + playTime);
+
+                    pauseButton.GetComponent<Button>().interactable = false;
 
                     platformExplosion.transform.position = new Vector3(collision.transform.position.x, transform.position.y + 1f, -3f);
                     platformExplosion.Play();
@@ -171,6 +228,8 @@ namespace Scripts.Tutorial
                 shieldExplosion.transform.position = new Vector3(collision.transform.position.x, transform.position.y + 1f, -3f);
                 shieldExplosion.Play();
 
+                PlayerPrefs.SetInt("Shields", PlayerPrefs.GetInt("Shields", 0) + 1);
+
                 StartCoroutine(StartShieldTimer());
 
                 Destroy(collision.gameObject);
@@ -179,13 +238,18 @@ namespace Scripts.Tutorial
 
         private void Die()
         {
+            scoreUI.text = "Score: " + score.ToString();
+
             if (!shield.activeSelf)
             {
-                SceneManager.LoadScene("Tutorial");
-
                 CameraShaker.Instance.ShakeOnce(2f, 2f, .1f, 1f);
 
                 Destroy(poinTextParent);
+
+                if (score > PlayerPrefs.GetInt("Highscore", 0))
+                {
+                    PlayerPrefs.SetInt("Highscore", score);
+                }
 
                 LoadDeathScreen();
 
@@ -193,14 +257,31 @@ namespace Scripts.Tutorial
             }
         }
 
+        private void GainXP()
+        {
+            PlayerPrefs.SetInt("LastXP", PlayerPrefs.GetInt("XP", 0));
+            PlayerPrefs.SetInt("XP", PlayerPrefs.GetInt("XP", 0) + score);
+        }
 
         private void LoadDeathScreen()
         {
-            multiplierUI.enabled = false;
-            shieldCooldownBorder.enabled = false;
-            shieldCooldown.enabled = false;
+            if (mainMenu != null)
+            {
+                multiplierUI.enabled = false;
+                shieldCooldownBorder.enabled = false;
+                shieldCooldown.enabled = false;
 
-            Time.timeScale = 0.1f;
+                highscore.text = "Highscore: " + PlayerPrefs.GetInt("Highscore", 0).ToString();
+
+                mainMenu.SetActive(true);
+
+                Time.timeScale = 0.1f;
+
+                foreach (GameObject go in spawners)
+                {
+                    go.SetActive(false);
+                }
+            }
         }
 
         IEnumerator StartShieldTimer()
