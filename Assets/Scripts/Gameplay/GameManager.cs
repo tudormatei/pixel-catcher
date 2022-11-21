@@ -15,6 +15,7 @@ namespace Scripts.Gameplay
         [SerializeField] private GameObject scoreObject;
         [SerializeField] private GameObject multiplierObject;
         [SerializeField] private GameObject shieldCooldownObject;
+        [SerializeField] private GameObject shieldUI;
 
         [SerializeField] private Animator scoreAnimator;
 
@@ -242,7 +243,7 @@ namespace Scripts.Gameplay
 
             if (!shield.activeSelf)
             {
-                CameraShaker.Instance.ShakeOnce(2f, 2f, .1f, 1f);
+                CameraShaker.Instance.ShakeOnce(3f, 2f, .1f, 1f);
 
                 Destroy(poinTextParent);
 
@@ -286,6 +287,7 @@ namespace Scripts.Gameplay
 
         IEnumerator StartShieldTimer()
         {
+            shieldUI.SetActive(true);
             shieldCooldown.fillAmount = 1f;
 
             shield.SetActive(true);
@@ -299,8 +301,8 @@ namespace Scripts.Gameplay
             }
 
             shield.SetActive(false);
-
             shieldCooldown.fillAmount = 1f;
+            shieldUI.SetActive(false);
         }
 
         IEnumerator LerpTextColor(Color endValue, float duration, GameObject go)

@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &128918213
 RectTransform:
   m_ObjectHideFlags: 0
@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 870, y: -348}
+  m_AnchoredPosition: {x: 870, y: -350}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &128918214
@@ -6205,7 +6205,7 @@ Transform:
   m_Children:
   - {fileID: 963194228}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
@@ -21193,7 +21193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2681786364427932506, guid: 97df3f18b8d222541910df19b090d5d2, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2681786364427932506, guid: 97df3f18b8d222541910df19b090d5d2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -32086,6 +32086,7 @@ MonoBehaviour:
   scoreObject: {fileID: 1686588855}
   multiplierObject: {fileID: 1490427478}
   shieldCooldownObject: {fileID: 0}
+  shieldUI: {fileID: 128918212}
   scoreAnimator: {fileID: 1686588859}
   shield: {fileID: 254226330}
   shieldDuration: 5
@@ -32119,7 +32120,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2895456274838327753, guid: 0c9b9e3425bca4041a912782dd53f652, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2895456274838327753, guid: 0c9b9e3425bca4041a912782dd53f652, type: 3}
       propertyPath: m_LocalPosition.x
